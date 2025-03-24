@@ -1,0 +1,133 @@
+{% extends "base.html" %} {% load static %} 
+{% block title %} Home Page {% endblock title %} 
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+{% endblock extrahead %} {% block content %}
+<!-- Filtering Section -->
+<div class="mb-8">
+  <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-white">
+    My Projects
+  </h1>
+
+  <!-- Search and Filter -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+    <div class="mb-4">
+      <label
+        for="name-search"
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Search Projects</label
+      >
+      <div class="relative">
+        <div
+          class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+        >
+          <svg
+            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          id="name-search"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Search by project name..."
+        />
+      </div>
+    </div>
+
+    <div>
+      <label
+        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+        >Filter by tags</label
+      >
+      <div class="flex flex-wrap gap-2 tag-list">
+        {% for tag in tags %}
+        <button
+          type="button"
+          data-tag="{{ tag.name | lower }}"
+          class="tag py-1 px-3 text-xs font-medium text-center text-white bg-blue-700 rounded-full hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          {{ tag.name }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div
+    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 projects-list"
+  >
+    {% for project in projects %}
+    <div
+      class="project bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 ease-in-out"
+      data-name="{{ project.title | lower }}"
+      data-tags="{{ project.tags.all | join:', '|lower }}"
+    >
+      <div class="p-5">
+        <h5
+          class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          {{ project.title }}
+        </h5>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+          {{ project.description }}
+        </p>
+        <div class="flex flex-wrap gap-2 mb-4">
+          {% for tag in project.tags.all %}
+          <span
+            class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300"
+            >{{ tag }}</span
+          >
+          {% endfor %}
+        </div>
+        <a
+          href="{% url 'project' project.id %}"
+          class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          View details
+          <svg
+            class="w-3.5 h-3.5 ms-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M1 5h12m0 0L9 1m4 4L9 9"
+            />
+          </svg>
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- No results message -->
+  <div
+    id="no-results"
+    class="hidden mt-6 p-4 text-sm text-blue-800 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400"
+    role="alert"
+  >
+    <span class="font-medium">No projects found!</span> Try adjusting your
+    search or filter criteria.
+  </div>
+</div>
+{% endblock content %} {% block extra_js %}
+<script src="{% static 'js/home.js' %}"></script>
+{% endblock extra_js %}
